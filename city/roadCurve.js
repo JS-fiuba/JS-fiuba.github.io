@@ -5,9 +5,9 @@ import { getScene } from '../core/setupScene';
 // ----- Configuración texturas ----- 
 const textureLoader = new THREE.TextureLoader();
 
-const colorMap = textureLoader.load('../textures/roadTextures/RoadColor.jpg');
-const normalMap = textureLoader.load('../textures/roadTextures/RoadNormalGL.jpg');
-const roughnessMap = textureLoader.load('../textures/roadTextures/RoadRoughness.jpg');
+const colorMap = textureLoader.load('/textures/roadTextures/RoadColor.jpg');
+const normalMap = textureLoader.load('/textures/roadTextures/RoadNormalGL.jpg');
+const roughnessMap = textureLoader.load('/textures/roadTextures/RoadRoughness.jpg');
 
 [colorMap, normalMap, roughnessMap].forEach(tex => {
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;

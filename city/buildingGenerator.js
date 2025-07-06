@@ -17,12 +17,13 @@ function loadTexture(path) {
     return tex;
 }
 
-const colorMap = loadTexture('../textures/buildingTextures/BuildingColor.jpg');
-const metalnessMap = loadTexture('../textures/buildingTextures/BuildingMetalness.jpg');
-const emissiveMap = loadTexture('../textures/buildingTextures/BuildingEmission.jpg');
-const normalMap = loadTexture('../textures/buildingTextures/BuildingNormalGL.jpg');
-const roughnessMap = loadTexture('../textures/buildingTextures/BuildingRoughness.jpg');
-const displacementMap = loadTexture('../textures/buildingTextures/BuildingDisplacement.jpg');
+const colorMap       = loadTexture('/textures/buildingTextures/BuildingColor.jpg');
+const metalnessMap   = loadTexture('/textures/buildingTextures/BuildingMetalness.jpg');
+const emissiveMap    = loadTexture('/textures/buildingTextures/BuildingEmission.jpg');
+const normalMap      = loadTexture('/textures/buildingTextures/BuildingNormalGL.jpg');
+const roughnessMap   = loadTexture('/textures/buildingTextures/BuildingRoughness.jpg');
+const displacementMap= loadTexture('/textures/buildingTextures/BuildingDisplacement.jpg');
+
 
 const sharedMaterialParams = {
     map: colorMap,

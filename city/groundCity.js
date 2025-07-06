@@ -12,12 +12,13 @@ let groundCity;
 const textureLoader = new THREE.TextureLoader();
 
 const texturePaths = {
-    aoMap: '../textures/streetTextures/StreetAmbientOcclusion.jpg',
-    colorMap: '../textures/streetTextures/StreetColor.jpg',
-    displacementMap: '../textures/streetTextures/StreetDisplacement.jpg',
-    normalMap: '../textures/streetTextures/StreetNormalDX.jpg',
-    roughnessMap: '../textures/streetTextures/StreetRoughness.jpg',
+    aoMap: '/textures/streetTextures/StreetAmbientOcclusion.jpg',
+    colorMap: '/textures/streetTextures/StreetColor.jpg',
+    displacementMap: '/textures/streetTextures/StreetDisplacement.jpg',
+    normalMap: '/textures/streetTextures/StreetNormalDX.jpg',
+    roughnessMap: '/textures/streetTextures/StreetRoughness.jpg',
 };
+
 
 const textures = {};
 let texturesLoaded = false;
