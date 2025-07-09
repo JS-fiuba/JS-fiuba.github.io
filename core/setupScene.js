@@ -12,8 +12,9 @@ export function setupScene(){
     // ---------- RENDERER ----------
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 2.0;
     container.appendChild(renderer.domElement);
 
     // ---------- SCENE ----------

@@ -6,8 +6,6 @@ import { getCamera } from './setupCamera.js';
 import { updateCameraControls } from './setupCamera.js';
 
 import {
-    getTargetBackgroundColor,
-    getCurrentBackgroundColor,
     getSunLight,
     getHemisphericalLight,
     getTargetSolarIntensity,
@@ -44,8 +42,6 @@ export function animate(){
 
     const sunLight = getSunLight();
     const hemiLight = getHemisphericalLight();
-    const targetBackgroundColor = getTargetBackgroundColor();
-    const currentBackgroundColor = getCurrentBackgroundColor();
     const targetSolarIntensity = getTargetSolarIntensity();
     const targetHemiIntensity = getTargetHemiIntensity();
     const setting = getSetting();
@@ -54,12 +50,6 @@ export function animate(){
 
     simulator = getSimulator();
     simulator.update(deltaTime);
-
-        // Fondo gradual
-    if (targetBackgroundColor) {
-        currentBackgroundColor.lerp(targetBackgroundColor, 0.05);
-        scene.background = currentBackgroundColor.clone();
-    }
 
     // Luz solar y hemisferica
     sunLight.intensity += (targetSolarIntensity - sunLight.intensity) * 0.05;

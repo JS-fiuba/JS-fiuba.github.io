@@ -75,7 +75,7 @@ function createPostMesh(
     postMesh.position.add(normal.clone().multiplyScalar(lateralOffset));
 
     const setting = getSetting();
-    const light = new THREE.SpotLight(0xffffff, setting.mode === 'Night' ? 3 : 0, 30, Math.PI / 6, 0.3, 1);
+    const light = new THREE.SpotLight(0xffffff, setting.mode === 'Night' ? 5 : 0, 30, Math.PI / 6, 0.3, 1);
     light.position.set(0, 0, 0);
     baseMesh.add(light);
 
@@ -91,7 +91,7 @@ function createPostMesh(
 
 export function updateStreetLightIntensities() {
     const setting = getSetting();
-    const targetIntensity = setting.mode === 'Night' ? 3.0 : 0.0;
+    const targetIntensity = setting.mode === 'Night' ? 5.0 : 0.0;
     for (const light of streetLights) {
         light.intensity += (targetIntensity - light.intensity) * 0.05;
     }
