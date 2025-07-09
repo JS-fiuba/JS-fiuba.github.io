@@ -20,7 +20,7 @@ async function init(){
     await initSimulator();
 
     // Creación del auto.
-    createCarModel();
+    await createCarModel();
 
     // Creacion de ciudad: Edificios, Texturas, Ruta, etc.
     cityGenerator();

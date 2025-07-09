@@ -38,7 +38,7 @@ export function animate(){
         renderer = getRenderer();
         
         stats = new Stats();
-        stats.showPanel(2);
+        stats.showPanel(0);
         document.body.appendChild(stats.dom);
     }
 

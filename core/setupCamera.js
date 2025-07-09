@@ -45,13 +45,14 @@ export function setupCamera(){
     // ----- Follow -----
     cameras['Follow'] = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
     vehicle.add(cameras['Follow']);
-    cameras['Follow'].position.set(0, 4, 8);
+    cameras['Follow'].position.set(0, 4, -8);
     cameras['Follow'].lookAt(vehicle.position);
 
     // ----- Cabin -----
     cameras['Cabin'] = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
     vehicle.add(cameras['Cabin']);
-    cameras['Cabin'].position.set(-0.5, 1.5, 0.5);
+    cameras['Cabin'].position.set(0.25, 0.6, -0.2);
+    cameras['Cabin'].lookAt(new THREE.Vector3(0.25, 0.6, 1));
 
     // ----- First Person -----
     cameras['First Person'] = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);

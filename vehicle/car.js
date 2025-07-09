@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 import { getScene } from '../core/setupScene.js';
 
 import { registerCarLights } from '../core/setupLights.js';
@@ -11,41 +13,48 @@ let chassis, wheels = [];
 let headLightRight, headLightLeft, tailLightRight, tailLightLeft;
 
 export function createCarModel() {
-    const scene = getScene();
+    return new Promise((resolve, reject) => {
+        const scene = getScene();
+        const loader = new GLTFLoader();
 
-    // ----- Crear chasis ----- 
-    const geometry = new THREE.BoxGeometry(2 * 0.5, 1 * 0.5, 4 * 0.5);
-    const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
-    chassis = new THREE.Mesh(geometry, material);
-    scene.add(chassis);
+        loader.load(
+            '/textures/car/LowPolyCar.glb',
+            function (gltf) {
+                const model = gltf.scene;
+                scene.add(model);
 
-    // ----- Ruedas ----- 
-    const wheelGeometry = new THREE.CylinderGeometry(0.6 * 0.5, 0.6 * 0.5, 0.4 * 0.5, 16).rotateZ(Math.PI * 0.5);
-    const wheelMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+                const wheelNames = ['Wheel_FL_0', 'Wheel_FR_1', 'Wheel_RL_2', 'Wheel_RR_3'];
+                model.traverse(child => {
+                    if (child.isMesh || child.isObject3D) {
+                        if (wheelNames.includes(child.name)) {
+                            wheels.push(child);
+                        }
+                    }
+                });
 
-    for (let i = 0; i < 4; i++) {
-        const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-        chassis.add(wheel);
-        wheel.position.set(10 * i, 2, 20 * i);
-        wheels.push(wheel);
-    }
+                chassis = model;
 
-    // Faros delanteros
-    headLightRight = createSpotlight(0xffddaa, 0.5, 0.3, -1.0, 0, 0, -10);
-    headLightLeft = createSpotlight(0xffddaa, -0.5, 0.3, -1.0, 0, 0, -10);
+                headLightRight = createSpotlight(0xffddaa, 0.5, 0.3,  0.7, 0, 0,  10);
+                headLightLeft  = createSpotlight(0xffddaa, -0.5, 0.3,  0.7, 0, 0, 10);
+                tailLightRight = createSpotlight(0xff0000, 0.5, 0.3, -0.7, 0, 0, -10);
+                tailLightLeft  = createSpotlight(0xff0000, -0.5, 0.3, -0.7, 0, 0, -10);
 
-    // Luces traseras
-    tailLightRight = createSpotlight(0xff0000, 0.5, 0.3, 1.0, 0, 0, 10);
-    tailLightLeft = createSpotlight(0xff0000, -0.5, 0.3, 1.0, 0, 0, 10);
+                [headLightRight, headLightLeft, tailLightRight, tailLightLeft].forEach(light => {
+                    chassis.add(light);
+                    chassis.add(light.target);
+                });
 
-    [headLightRight, headLightLeft, tailLightRight, tailLightLeft].forEach(light => {
-        chassis.add(light);
-        chassis.add(light.target);
-        //scene.add(new THREE.SpotLightHelper(light));
+                registerCarLights(headLightRight, headLightLeft, tailLightRight, tailLightLeft);
+
+                resolve(); // <- ¡Indica que ya terminó!
+            },
+            undefined,
+            function (error) {
+                console.error("Error cargando el modelo GLTF:", error);
+                reject(error);
+            }
+        );
     });
-
-    registerCarLights(headLightRight, headLightLeft, tailLightRight, tailLightLeft);
-
 }
 
 function createSpotlight(color, x, y, z, tx, ty, tz) {

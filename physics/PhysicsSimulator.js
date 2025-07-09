@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-
+import { getScene } from '../core/setupScene.js';
 import { RapierPhysics } from 'three/addons/physics/RapierPhysics.js';
 
 export const defaultVehicleParams = {
-    wheelSeparation: 2.5  * 0.5, // distance between the wheels
-    axesSeparation: 3  * 0.5, // distance between the front and rear wheels
-    wheelRadius: 0.6  * 0.5,
-    wheelWidth: 0.4  * 0.5,
-    suspensionRestLength: 0.8  * 0.5,
-    initialPosition:new THREE.Vector3(0,1,0), // initial position of the vehicle
+    wheelSeparation: -0.8, // distance between the wheels
+    axesSeparation: 1.2, // distance between the front and rear wheels
+    wheelRadius: 0.2,
+    wheelWidth: 0.1,
+    suspensionRestLength: 0.0,
+    initialPosition:new THREE.Vector3(0,0.1,0), // initial position of the vehicle
     initialYRotation:0, // angle in radians
     steeringReaction:0.1, // how fast the steering reacts to input
     maxSteeringAngle: Math.PI / 16, // maximum steering angle in radians
@@ -27,7 +27,7 @@ export const defaultVehicleParams = {
 
 export const defaultGroundParams = {
     width: 200,
-    height: 0.12,
+    height: 0.01,
     length: 200,
 }
 
@@ -59,8 +59,8 @@ export class PhysicsSimulator {
         const axesSeparation = this.params.vehicle.axesSeparation;
 
         this.wheelPositions = [
-            { x: -wheelSeparation / 2, y: 0, z: -axesSeparation/2 },
-            { x: wheelSeparation / 2, y: 0, z: -axesSeparation/2},
+            { x: -wheelSeparation / 2, y: 0, z: -axesSeparation/2 + 0.11},
+            { x: wheelSeparation / 2, y: 0, z: -axesSeparation/2 + 0.11},
             { x: -wheelSeparation / 2, y: 0, z: axesSeparation/2},
             { x: wheelSeparation / 2, y: 0, z: axesSeparation/2},
         ];
@@ -89,7 +89,7 @@ export class PhysicsSimulator {
         this.physics.addMesh(ground);
 
         // create chassis
-        geo = new THREE.BoxGeometry(2, 0.1, 4);
+        geo = new THREE.BoxGeometry(1, 0.1/2, 1.8);
         
         const chasisMesh = new THREE.Mesh(geo, genericMaterial);
         chasisMesh.position.copy(this.params.vehicle.initialPosition); 
@@ -142,7 +142,7 @@ export class PhysicsSimulator {
             this.vehicleController.addWheel(pos, wheelDirection, wheelAxle, suspensionRestLength, wheelRadius);
             this.vehicleController.setWheelSuspensionStiffness(index, 24.0);
             this.vehicleController.setWheelFrictionSlip(index, 1000.0);
-            this.vehicleController.setWheelSteering(index, pos.z < 0);
+            this.vehicleController.setWheelSteering(index, pos.z > 0);
         });
     }
 
@@ -200,18 +200,18 @@ export class PhysicsSimulator {
 
         const engineForce = -accelerateForce;
 
-        this.vehicleController.setWheelEngineForce(0, engineForce);
-        this.vehicleController.setWheelEngineForce(1, engineForce);
+        this.vehicleController.setWheelEngineForce(2, engineForce);
+        this.vehicleController.setWheelEngineForce(3, engineForce);
 
-        const currentSteering = this.vehicleController.wheelSteering(0);
+        const currentSteering = this.vehicleController.wheelSteering(2);
         const steerDirection = this.vehicleState.right;
         const steerAngle = this.params.vehicle.maxSteeringAngle;;
         const steerReaction = this.params.vehicle.steeringReaction;
 
         const steering = THREE.MathUtils.lerp(currentSteering, steerAngle * steerDirection, steerReaction);
 
-        this.vehicleController.setWheelSteering(0, steering);
-        this.vehicleController.setWheelSteering(1, steering);
+        this.vehicleController.setWheelSteering(2, steering);
+        this.vehicleController.setWheelSteering(3, steering);
 
         const wheelBrake = this.vehicleState.brake * brakeForce;
         this.vehicleController.setWheelBrake(0, wheelBrake);
@@ -222,8 +222,8 @@ export class PhysicsSimulator {
 
     setupEventListeners() {
         window.addEventListener('keydown', (event) => {
-            if (event.key === 'w' || event.key === 'ArrowUp') this.vehicleState.forward = 1;
-            if (event.key === 's' || event.key === 'ArrowDown') this.vehicleState.forward = -1;
+            if (event.key === 'w' || event.key === 'ArrowUp') this.vehicleState.forward = -1;
+            if (event.key === 's' || event.key === 'ArrowDown') this.vehicleState.forward = +1;
             if (event.key === 'a' || event.key === 'ArrowLeft') this.vehicleState.right = 1;
             if (event.key === 'd' || event.key === 'ArrowRight') this.vehicleState.right = -1;
             if (event.key === 'r') this.vehicleState.reset = true;

@@ -24,12 +24,21 @@ const normalMap      = loadTexture('/textures/buildingTextures/BuildingNormalGL.
 const roughnessMap   = loadTexture('/textures/buildingTextures/BuildingRoughness.jpg');
 const displacementMap= loadTexture('/textures/buildingTextures/BuildingDisplacement.jpg');
 
+// ------- EnvMap -------
+const cubeLoader = new THREE.CubeTextureLoader();
+const envMap = cubeLoader.load([
+    '/textures/buildingTextures/px.png',
+    '/textures/buildingTextures/nx.png',
+    '/textures/buildingTextures/py.png',
+    '/textures/buildingTextures/ny.png',
+    '/textures/buildingTextures/pz.png',
+    '/textures/buildingTextures/nz.png',
+]);
 
 const sharedMaterialParams = {
     map: colorMap,
     emissiveMap,
     emissive: new THREE.Color(0xffcc88),
-    metalness: 0.6,
     metalnessMap,
     normalMap,
     roughnessMap,
@@ -37,6 +46,7 @@ const sharedMaterialParams = {
     displacementScale: 0,
     displacementBias: 0,
     roughness: 0.3,
+    metalness: 0.6,
     side: THREE.DoubleSide,
     flatShading: false,
 };
@@ -67,8 +77,32 @@ export function buildingGenerator(){
     }
     geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
 
-    const material = new THREE.MeshStandardMaterial({ ...sharedMaterialParams, emissiveIntensity });
-
+    const materialVariants = [
+        new THREE.MeshStandardMaterial({
+            ...sharedMaterialParams,
+        }),
+        new THREE.MeshStandardMaterial({
+            ...sharedMaterialParams,
+            metalness: 1.0,
+            roughness: 0.05,
+            envMap: envMap,
+            envMapIntensity: 1.5,
+        }),
+        new THREE.MeshStandardMaterial({
+            ...sharedMaterialParams,
+            metalness: 0.8,
+            roughness: 0.3,
+            envMap: envMap,
+            envMapIntensity: 0.8,
+        }),
+        new THREE.MeshStandardMaterial({
+            ...sharedMaterialParams,
+            roughness: 0.9,
+            metalness: 0.2,
+        }),
+    ];
+    const material = materialVariants[Math.floor(Math.random() * materialVariants.length)];
+    material.emissiveIntensity = emissiveIntensity; 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = mesh.receiveShadow = true;
     buildingInstances.push(mesh);
